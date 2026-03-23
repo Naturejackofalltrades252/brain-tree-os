@@ -274,6 +274,16 @@ export function readBrainFile(brainPath: string, filePath: string): string {
   return fs.readFileSync(resolved, 'utf8')
 }
 
+export function writeBrainFile(brainPath: string, filePath: string, content: string): void {
+  // Security: ensure the file is within the brain directory
+  const resolved = path.resolve(brainPath, filePath)
+  if (!resolved.startsWith(path.resolve(brainPath))) {
+    throw new Error('Path traversal detected')
+  }
+
+  fs.writeFileSync(resolved, content, 'utf8')
+}
+
 // ── Demo brain path ──────────────────────────────────
 
 export function getDemoBrainPath(): string {

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, MessageCircle } from 'lucide-react';
 import { FileTree } from './file-tree';
 import TabBar, { type Tab } from './tab-bar';
 import FileViewer from './file-viewer';
@@ -11,6 +11,8 @@ import { ConnectionStatusIndicator } from './connection-status';
 import { ShareButton } from './share-button';
 import BrainLoader from './brain-loader';
 import { useBrainRealtime } from '@/hooks/use-brain-realtime';
+import { useBrainChat } from '@/hooks/use-brain-chat';
+import { ChatPanel } from './chat/chat-panel';
 
 const GraphView = dynamic(() => import('./graph-view'), {
   ssr: false,
@@ -57,6 +59,10 @@ export function BrainLayout({
   const { files, links, executionSteps, handoffs, connectionStatus, isStreaming, optimisticUpdateStep } =
     useBrainRealtime(brainId, initialData);
 
+  // Brain chat (only for non-demo brains)
+  const chat = useBrainChat(brainId);
+  const [chatOpen, setChatOpen] = useState(false);
+
   // Brain is "building" when it has very few files (init-braintree is running)
   const isBuilding = !isDemo && files.length > 0 && files.length < 5;
 
@@ -75,6 +81,9 @@ export function BrainLayout({
   const [activeTabId, setActiveTabId] = useState('graph');
   const [fileContents, setFileContents] = useState<Map<string, string>>(new Map());
   const [loadingFile, setLoadingFile] = useState<string | null>(null);
+
+  // File paths for autocomplete in editor
+  const filePaths = useMemo(() => files.map((f) => f.path), [files]);
 
   const handleToggleStep = useCallback(
     async (stepId: string, currentStatus: string) => {
@@ -162,6 +171,11 @@ export function BrainLayout({
     openFileTab(fileId, filePath);
   }
 
+  // Handle content changes from editor (update in-memory cache)
+  const handleContentChange = useCallback((fileId: string, newContent: string) => {
+    setFileContents((prev) => new Map(prev).set(fileId, newContent));
+  }, []);
+
   const activeTab = tabs.find((t) => t.id === activeTabId);
   const activeFileContent = activeTabId !== 'graph' ? fileContents.get(activeTabId) : null;
 
@@ -222,7 +236,15 @@ export function BrainLayout({
           ) : loadingFile === activeTabId ? (
             <BrainLoader />
           ) : activeFileContent ? (
-            <FileViewer content={activeFileContent} filePath={activeTab?.path ?? ''} onWikilinkClick={handleWikilinkClick} />
+            <FileViewer
+              content={activeFileContent}
+              filePath={activeTab?.path ?? ''}
+              onWikilinkClick={handleWikilinkClick}
+              brainId={brainId}
+              isOwner={!isDemo}
+              filePaths={filePaths}
+              onContentChange={(newContent) => handleContentChange(activeTabId, newContent)}
+            />
           ) : (
             <div className="flex h-full items-center justify-center">
               <p className="text-[13px] text-text-muted">Select a file to view</p>
@@ -230,6 +252,26 @@ export function BrainLayout({
           )}
         </div>
       </main>
+
+      {/* Chat toggle button (hidden for demo) */}
+      {!isDemo && (
+        <button
+          onClick={() => setChatOpen(!chatOpen)}
+          className="fixed bottom-4 right-[320px] z-20 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-bg/90 shadow-lg backdrop-blur-sm transition-colors hover:bg-text/5 lg:right-4 lg:bottom-16"
+          title="Brain Chat"
+          style={chatOpen ? { backgroundColor: 'rgba(91,154,101,0.12)', borderColor: 'rgba(91,154,101,0.3)' } : undefined}
+        >
+          <MessageCircle className="h-4 w-4" style={{ color: chatOpen ? '#5B9A65' : undefined }} />
+          {chat.agentStatus === 'online' && (
+            <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-bg" style={{ backgroundColor: '#5B9A65' }} />
+          )}
+        </button>
+      )}
+
+      {/* Chat panel */}
+      {!isDemo && chatOpen && (
+        <ChatPanel chat={chat} brainId={brainId} onClose={() => setChatOpen(false)} />
+      )}
 
       <button onClick={() => setRightPaneOpen(!rightPaneOpen)} className="fixed bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-bg/90 shadow-lg backdrop-blur-sm transition-colors hover:bg-text/5 lg:hidden" title="Execution Plan">
         {rightPaneOpen ? <PanelRightClose className="h-4 w-4 text-leaf" /> : <PanelRightOpen className="h-4 w-4 text-text-muted" />}
