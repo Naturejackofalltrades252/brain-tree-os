@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         if: steps.tag.outputs.exists == 'false'
-        run: npx turbo run build
+        run: npm run build
 
       - name: Publish to npm
         if: steps.tag.outputs.exists == 'false'
